@@ -1,16 +1,18 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
-import "./NFT.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 
-contract NFTFactory {
-    NFT[] nftClones;
+contract NFTFactory is ERC721URIStorage {
+    uint256 private tokenIdCounter;
+    constructor(string memory _tokenName, string memory _tokenSymbol) ERC721(_tokenName, _tokenSymbol){}
 
-    function createNFTInstance(string memory _tokenName, string memory _tokenSymbol) external returns (NFT newNft_) {
-        newNft_ = new NFT(_tokenName, _tokenSymbol);
-        nftClones.push(newNft_);
+    function createNFT(string memory _tokenURI) external {
+        uint256 tokenId = tokenIdCounter++;
+        _safeMint(msg.sender, tokenId);
+        _setTokenURI(tokenId, _tokenURI);
     }
 
-    function getcreateNFTInstance() external view returns (NFT[] memory) {
-        return nftClones;
+    function getTokenURI(uint256 _tokenId) external view returns(string memory) {
+        return tokenURI(_tokenId);
     }
 }

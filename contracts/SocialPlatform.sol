@@ -22,11 +22,14 @@ contract SocialPlatform {
     mapping(address => User) users;
     mapping(uint256 => Group) groups;
     mapping(address => uint256) usersBalance;
+    mapping(address => mapping(uint256 => bool)) public moderatedNFTs;
 
     event UserRegistered(address indexed user, string indexed role);
     event GroupCreated(uint256 indexed groupId, string name, address indexed creator);
     event EtherReceived(address indexed sender, uint256 amount);
     event EtherWithdrawn(address indexed receiver, uint256 amount);
+    event ContentModerated(uint256 indexed tokenId, address user);
+
 
     modifier onlyAdmin() {
         require(keccak256(abi.encodePacked(users[msg.sender].role)) == keccak256(abi.encodePacked("Admin")), "Only Admin can call this function");
@@ -83,6 +86,11 @@ contract SocialPlatform {
         payable(msg.sender).transfer(_amount);
         
         emit EtherWithdrawn(msg.sender, _amount);
+    }
+
+    function moderateContent(uint256 _tokenId) public onlyAdminOrModerate {
+        moderatedNFTs[msg.sender][_tokenId] = true;
+        emit ContentModerated(_tokenId, msg.sender);
     }
 
     function viewNFT(uint256 _tokenId) public view returns (string memory) {
