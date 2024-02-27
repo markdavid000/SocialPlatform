@@ -19,8 +19,14 @@ contract SocialPlatform {
         address[] members;
     }
 
+    struct Comment {
+        address user;
+        string content;
+    }
+
     mapping(address => User) users;
     mapping(uint256 => Group) groups;
+    mapping(uint256 => Comment[]) public nftComments;
     mapping(address => uint256) usersBalance;
     mapping(address => mapping(uint256 => bool)) public moderatedNFTs;
 
@@ -36,7 +42,7 @@ contract SocialPlatform {
         _;
     }
 
-    modifier onlyAdminOrModerate() {
+    modifier onlyAdminOrModerator() {
         require(keccak256(abi.encodePacked(users[msg.sender].role)) == keccak256(abi.encodePacked("Admin")) || keccak256(abi.encodePacked(users[msg.sender].role)) == keccak256(abi.encodePacked("Moderator")), "Only Admin or Moderator can call this function");
         _;
     }
@@ -88,7 +94,7 @@ contract SocialPlatform {
         emit EtherWithdrawn(msg.sender, _amount);
     }
 
-    function moderateContent(uint256 _tokenId) public onlyAdminOrModerate {
+    function moderateContent(uint256 _tokenId) public onlyAdminOrModerator {
         moderatedNFTs[msg.sender][_tokenId] = true;
         emit ContentModerated(_tokenId, msg.sender);
     }
