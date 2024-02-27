@@ -26,7 +26,7 @@ contract SocialPlatform {
 
     mapping(address => User) users;
     mapping(uint256 => Group) groups;
-    mapping(uint256 => Comment[]) public nftComments;
+    mapping(uint256 => Comment[]) nftComments;
     mapping(address => uint256) usersBalance;
     mapping(address => mapping(uint256 => bool)) public moderatedNFTs;
 
@@ -75,6 +75,12 @@ contract SocialPlatform {
         emit GroupCreated(groupId, _name, msg.sender);
     }
 
+    function createNFT(string memory _tokenName, string memory _tokenSymbol) external {
+        require(users[msg.sender].registered, "User not registered");
+
+        nftFactoryAddress.createNFTInstance(_tokenName, _tokenSymbol);
+    }
+
     function deposit() external payable {
         if(msg.sender == address(0)){
             revert ADDRESS_ZERO_DETECTED();
@@ -101,9 +107,9 @@ contract SocialPlatform {
         emit ContentModerated(_tokenId, msg.sender);
     }
 
-    function viewNFT(uint256 _tokenId) public view returns (string memory) {
-        return nftFactoryAddress.getTokenURI(_tokenId);
-    }
+    // function viewNFT(uint256 _tokenId) public view returns (string memory) {
+    //     return nftFactoryAddress.getTokenURI(_tokenId);
+    // }
 
     function getUserRole(address _user) public view returns (string memory) {
         return users[_user].role;
