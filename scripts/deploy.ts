@@ -1,10 +1,7 @@
 import { ethers } from "hardhat";
 
 async function main() {
-  const NFTFactory = await ethers.deployContract("NFTFactory", [
-    "MarkNFT",
-    "MNFT",
-  ]);
+  const NFTFactory = await ethers.deployContract("NFTFactory");
 
   await NFTFactory.waitForDeployment();
 
@@ -17,7 +14,7 @@ async function main() {
   await SocialPlatform.waitForDeployment();
 
   console.log(
-    `NFTFactory Contract has been deployed to ${SocialPlatform.target}`
+    `Social Platform Contract has been deployed to ${SocialPlatform.target}`
   );
 }
 
@@ -27,3 +24,9 @@ main().catch((error) => {
   console.error(error);
   process.exitCode = 1;
 });
+
+// -------------- FACTORY CONTRACT ADDRESS ------------- \\
+// 0x87D5502431BBc2757AC2acbEABA1E9Bac4c5d41E
+
+// -------------- SOCIAL PLATFORM CONTRACT ADDRESS -------------- \\
+// 0x179932D2eBd09150B133b204122C96b633d4E291
