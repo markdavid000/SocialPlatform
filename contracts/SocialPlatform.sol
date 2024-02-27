@@ -35,6 +35,8 @@ contract SocialPlatform {
     event EtherReceived(address indexed sender, uint256 amount);
     event EtherWithdrawn(address indexed receiver, uint256 amount);
     event ContentModerated(uint256 indexed tokenId, address user);
+    event CommentAdded(uint256 indexed tokenId, address indexed commenter, string text);
+
 
 
     modifier onlyAdmin() {
@@ -105,5 +107,14 @@ contract SocialPlatform {
 
     function getUserRole(address _user) public view returns (string memory) {
         return users[_user].role;
+    }
+
+    function addComment(uint256 _tokenId, string memory _text) public {
+        nftComments[_tokenId].push(Comment(msg.sender, _text));
+        emit CommentAdded(_tokenId, msg.sender, _text);
+    }
+
+    function getComments(uint256 _tokenId) public view returns (Comment[] memory) {
+        return nftComments[_tokenId];
     }
 }
